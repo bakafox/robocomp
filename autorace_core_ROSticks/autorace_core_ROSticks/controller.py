@@ -75,6 +75,9 @@ class Robobike_Goes_Brrrr(Node):
         self.current_competition = 1
         self.current_move = 1
         self.road_choice = 'right' # Фоллбэк
+        self.time_start = None
+        self.time_prev = None
+        self.time_stop = None
 
         # Ровно по этой же причине мы храним данные,
         # связанные с текущим шагом и испытанием, как
@@ -344,8 +347,9 @@ class Robobike_Goes_Brrrr(Node):
                             # Проезжаем кусочек дороги после поворота
                             self.current_move += self.move_to_odom(0.706, 0.0, 0.3, 0.0)
                         case _:
-                            # Сообщаем прошедшее с начала заезда время, просто из интереса
+                            # Сообщаем прошедшее с начала отсчёта время, записываем текущее
                             self.get_logger().warn(f'Испытание 1 завершено! Времени прошло: {time.time() - self.time_start}')
+                            self.time_prev = time.time()
 
                             # Переходим к следующему испытанию
                             self.current_move = 1
@@ -382,7 +386,7 @@ class Robobike_Goes_Brrrr(Node):
                                 self.get_logger().info(f'Выбранная дорога: {self.road_choice}')
                                 self.current_move += 1
                             elif (left_proba < right_proba) and (right_proba > self.better_safe_than_sorry):
-                                self.road_choice = 'right'
+                                # self.road_choice = 'right'
                                 self.get_logger().info(f'Выбранная дорога: {self.road_choice}')
                                 self.current_move += 1
                             else:
@@ -411,12 +415,13 @@ class Robobike_Goes_Brrrr(Node):
                         case 8:
                             # Проезжаем оставшийся кусочек дороги до поворота
                             if (self.road_choice == 'right'):
-                                self.current_move += self.move_to_odom(0.24, -0.3, 0.2, 0.2)
+                                self.current_move += self.move_to_odom(0.24, -0.4, 0.2, 0.2)
                             else:
                                 self.current_move += self.move_to_odom(0.08, -0.4, 0.1, 0.2)
                         case _:
-                            # Сообщаем прошедшее с начала заезда время, просто из интереса
-                            self.get_logger().warn(f'Испытание 2 завершено! Времени прошло: {time.time() - self.time_start}')
+                            # Сообщаем прошедшее с прошлого испытания время, записываем текущее
+                            self.get_logger().warn(f'Испытание 2 завершено! Времени прошло: {time.time() - self.time_prev}')
+                            self.time_prev = time.time()
 
                             # Переходим к следующему испытанию
                             self.current_move = 1
@@ -434,59 +439,59 @@ class Robobike_Goes_Brrrr(Node):
                                 self.current_move += self.move_to_odom(0.0, 0.0, 0.0, 0.0)
                         case 2:
                             # Едем до края
-                            self.current_move += self.move_to_odom(0.84, -0.22, 0.2, 0.1)
+                            self.current_move += self.move_to_odom(0.85, -0.2, 0.2, 0.1)
                         case 3:
                             # Поворачиваем робота
-                            self.current_move += self.move_to_odom(0.0, -np.radians(80), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, -np.radians(85), 0.0, 0.3)
                         case 4:
                             # Едем дальше (ёпсель-мопсель, 4 часа усрал на начало третьего испытания!!!)
-                            # (-- да не оч ты их как-то "усрал", я смотрю.......)
                             # self.current_move += self.move_to_odom(0.744*2, 0.0, 0.3, 0.0)
                             self.current_move += self.move_to_odom(1.3, 0.0, 0.2, 0.0)
                         case 5:
                             # Поворот налево, на строительную площадку
-                            self.current_move += self.move_to_odom(0.0, np.radians(45), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(40), 0.0, 0.2)
                         case 6:
                             # Объезд 1
                             # self.get_logger().info('Запускаю программу "контр-аварийная езда 1"')
-                            self.current_move += self.move_to_odom(0.13, 0.0, 0.1, 0.0)
+                            self.current_move += self.move_to_odom(0.12, 0.0, 0.1, 0.0)
                         case 7:
                             # Снова поворот налево
-                            self.current_move += self.move_to_odom(0.0, np.radians(40), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(40), 0.0, 0.2)
                         case 8:
                             # Объезд 2
                             # self.get_logger().info('Запускаю программу "аварийная контр-езда 1"')
-                            self.current_move += self.move_to_odom(0.35, 0.0, 0.2, 0.0)
+                            self.current_move += self.move_to_odom(0.38, 0.0, 0.2, 0.0)
                         case 9:
                             # Снова налево
-                            self.current_move += self.move_to_odom(0.0, np.radians(80), 0.0, 0.5)
+                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.3)
                         case 10:
                             # Объезд 3
                             self.current_move += self.move_to_odom(0.32, 0.0, 0.2, 0.0)
                         case 11:
                             # Поворот направо
-                            self.current_move += self.move_to_odom(0.0, np.radians(-80), 0.0, 0.5)
+                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.3)
                         case 12:
                             # Объезд 4
-                            self.current_move += self.move_to_odom(0.35, 0.0, 0.2, 0.0)
+                            self.current_move += self.move_to_odom(0.34, 0.0, 0.2, 0.0)
                         case 13:
                             # Снова поворот направо
-                            self.current_move += self.move_to_odom(0.0, np.radians(-80), 0.0, 0.5)
+                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.3)
                         case 14:
                             # Объезд 5
                             self.current_move += self.move_to_odom(0.32, 0.0, 0.2, 0.0)
                         case 15:
                             # Финальный поворот налево
-                            self.current_move += self.move_to_odom(0.0, np.radians(80), 0.0, 0.5)
+                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.3)
                         case 16:
                             # Выезжаем из туннеля
-                            self.current_move += self.move_to_odom(0.4, np.pi/2, 0.3, 0.3) # Чтобы эпично влететь в знак парковки
+                            self.current_move += self.move_to_odom(0.26, np.pi/2+0.2, 0.4, 0.2) # Чтобы эпично влететь в знак парковки
                         case 17:
                             # Наконец, уезжаем со стройплощадки!!!11
-                            self.current_move += self.move_to_odom(1.0, 0.0, 1.0, 0.0)
+                            self.current_move += self.move_to_odom(0.8, 0.0, 0.2, 0.0)
                         case _:
-                            # Сообщаем прошедшее с начала заезда время, просто из интереса
-                            self.get_logger().warn(f'Испытание 3 завершено! Времени прошло: {time.time() - self.time_start}')
+                            # Сообщаем прошедшее с прошлого испытания время, записываем текущее
+                            self.get_logger().warn(f'Испытание 3 завершено! Времени прошло: {time.time() - self.time_prev}')
+                            self.time_prev = time.time()
 
                             # Переходим к следующему испытанию
                             self.current_move = 1
@@ -497,7 +502,7 @@ class Robobike_Goes_Brrrr(Node):
                         case 1:
                             # На всякий случай выполняем полную остановку (согласно правилам,
                             # перед завершением заезда робот должен полностью остановиться)
-                            self.current_move += self.move_to_odom(0.02, 0.0, 0.01, 0.0)
+                            self.current_move += self.move_to_odom(0.2, 0.0, 0.02, 0.0)
                         case 2:
                             # И уже теперь записываем время окончания заезда
                             self.time_stop = time.time()
@@ -527,6 +532,7 @@ def main(args=None):
     except SystemExit:
         robobike.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
