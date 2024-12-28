@@ -386,7 +386,6 @@ class Robobike_Goes_Brrrr(Node):
                                 self.get_logger().info(f'Выбранная дорога: {self.road_choice}')
                                 self.current_move += 1
                             elif (left_proba < right_proba) and (right_proba > self.better_safe_than_sorry):
-                                # self.road_choice = 'right'
                                 self.get_logger().info(f'Выбранная дорога: {self.road_choice}')
                                 self.current_move += 1
                             else:
@@ -417,7 +416,7 @@ class Robobike_Goes_Brrrr(Node):
                             if (self.road_choice == 'right'):
                                 self.current_move += self.move_to_odom(0.24, -0.4, 0.2, 0.2)
                             else:
-                                self.current_move += self.move_to_odom(0.08, -0.4, 0.1, 0.2)
+                                self.current_move += self.move_to_odom(0.06, -0.4, 0.1, 0.2)
                         case _:
                             # Сообщаем прошедшее с прошлого испытания время, записываем текущее
                             self.get_logger().warn(f'Испытание 2 завершено! Времени прошло: {time.time() - self.time_prev}')
@@ -446,7 +445,7 @@ class Robobike_Goes_Brrrr(Node):
                         case 4:
                             # Едем дальше (ёпсель-мопсель, 4 часа усрал на начало третьего испытания!!!)
                             # self.current_move += self.move_to_odom(0.744*2, 0.0, 0.3, 0.0)
-                            self.current_move += self.move_to_odom(1.3, 0.0, 0.2, 0.0)
+                            self.current_move += self.move_to_odom(1.3, 0.0, 0.3, 0.0)
                         case 5:
                             # Поворот налево, на строительную площадку
                             self.current_move += self.move_to_odom(0.0, np.radians(40), 0.0, 0.2)
@@ -463,28 +462,28 @@ class Robobike_Goes_Brrrr(Node):
                             self.current_move += self.move_to_odom(0.38, 0.0, 0.2, 0.0)
                         case 9:
                             # Снова налево
-                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.2)
                         case 10:
                             # Объезд 3
                             self.current_move += self.move_to_odom(0.32, 0.0, 0.2, 0.0)
                         case 11:
                             # Поворот направо
-                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.2)
                         case 12:
                             # Объезд 4
                             self.current_move += self.move_to_odom(0.34, 0.0, 0.2, 0.0)
                         case 13:
                             # Снова поворот направо
-                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(-75), 0.0, 0.2)
                         case 14:
                             # Объезд 5
                             self.current_move += self.move_to_odom(0.32, 0.0, 0.2, 0.0)
                         case 15:
                             # Финальный поворот налево
-                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.3)
+                            self.current_move += self.move_to_odom(0.0, np.radians(75), 0.0, 0.2)
                         case 16:
                             # Выезжаем из туннеля
-                            self.current_move += self.move_to_odom(0.26, np.pi/2+0.2, 0.4, 0.2) # Чтобы эпично влететь в знак парковки
+                            self.current_move += self.move_to_odom(0.24, np.pi/2+0.06, 0.4, 0.2) # Чтобы эпично влететь в знак парковки
                         case 17:
                             # Наконец, уезжаем со стройплощадки!!!11
                             self.current_move += self.move_to_odom(0.8, 0.0, 0.2, 0.0)
@@ -500,24 +499,27 @@ class Robobike_Goes_Brrrr(Node):
                 case 4: # === КОНЕЦ ЗАЕЗДА ===
                     match self.current_move:
                         case 1:
-                            # На всякий случай выполняем полную остановку (согласно правилам,
+                            # Замедляемся, чтобы избавиться от инерации (согласно правилам,
                             # перед завершением заезда робот должен полностью остановиться)
-                            self.current_move += self.move_to_odom(0.2, 0.0, 0.02, 0.0)
+                            self.current_move += self.move_to_odom(0.2, 0.0, 0.04, 0.0)
                         case 2:
-                            # И уже теперь записываем время окончания заезда
+                            # ...и только теперь записываем время окончания заезда
                             self.time_stop = time.time()
 
                             # Всё! Сообщаем об окончании прохождения
                             req_finish = String()
-                            req_finish.data = f'Наш робот проехал первые 3 испытания и, очень уставший, но довольный собой, заснул прямо у знака парковки... Спасибо за внимание! \n\nКоманда: ROSticks | Итоговое время: {self.time_stop - self.time_start}\n'
+                            req_finish.data = f'Наш робот проехал первые 3 испытания и, очень уставший, но довольный собой, заснул прямо у парковки... Спасибо за внимание! \n\nКоманда: ROSticks | Итоговое время: {self.time_stop - self.time_start}\n'
                             self.pub_finish.publish(req_finish)
                             self.get_logger().info(req_finish.data)
 
                             # Переходим к следующему испытанию
+                            # (которого нет, поэтому попадём в фоллбэк)
                             self.current_move = 1
                             self.current_competition += 1
 
-                case _: # Полное прекращение работы рос2 в России
+                case _: # Полное прекращение работы ROS2 в России
+                    # self.create_rate(3).sleep() # Чтобы визуализация осталась ещё на пару секунд
+
                     self.get_logger().warn('ЦЕ КІНЕЦЬ...')
                     raise SystemExit
 

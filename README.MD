@@ -2,17 +2,28 @@
 
 ![alt text](README-IMG.JPG)
 
-Идея в том, что пакет с роботом, его датчиками, трассой, и т.д. уже настроены и написаны за нас, и, пользуясь тем, что дают, нужно написать пакет, который позволил бы роботу проехать как можно больше (хотя бы два) испытания.
+Идея в том, что пакет с роботом, его датчиками, трассой, и т.д. уже настроены и написаны за нас, и, пользуясь тем, что дают, нужно написать пакет, который позволил бы роботу проехать как можно больше (хотя бы два, у нас три) испытания.
 
-Репозиторий с пакетами AutoRace: https://github.com/virusapex/my_robot/tree/competition
+Репозиторий с пакетами AutoRace: https://github.com/virusapex/my_robot/tree/competition (если что, все пакеты я уже собрал здесь как сабмодуль, т.е. отсюда напрямую ставить ничего не надо)
 
 Гугл док с описанием каждого испытания и правилами соревнования: https://docs.google.com/document/u/0/d/1sQG8y7XGYGjq9g8EpqIKAqsGXEpJOtXgXYXiI4EAVy0/mobilebasic?pli=1 (вход с @g.nsu.ru)
 
-Если что, все пакеты я уже собрал здесь, то есть из репозитория выше непрямую ставить ничего не надо. 
+
+# Результаты<sup>*</sup>
+
+- **Первое испытание:** $(12.79 + 12.90) / 2 = 12.845$
+- **Второе испытание:** $(22.29 + 23.36) / 2 = 22.825$
+- **Третье испытание:** $(82.58 + 79.94) / 2 = 81.260$
+- Время завершения **(сумма)**: $(12.845 + 22.825 + 81.260) = 116.930$
+- Время завершения **(internal)**: $(122.89 + 124.53) / 2 = 123.710$
+- Время завершения **(referee)**: $(106.27 + 108.68) / 2 = 107.475$
+
+<big>**\***</big> По правилам, отсчёт времени начинается с момента, когда на светофоре загорается зеленый свет.
+
 
 # Перед началом работы…
 
-0. Очевидно, установить [ROS2 Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html) (я использую [воркспейс ros2_ws](https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html#new-directory) из туториала), [RViz](https://docs.ros.org/en/humble/Tutorials/Intermediate/RViz/RViz-User-Guide/RViz-User-Guide.html#install-or-build-rviz) и [Gazebo (у меня Fortress)](https://gazebosim.org/docs/harmonic/install_ubuntu/#binary-installation-on-ubuntu). Что интересно и печально, в WSL2 мне нормально всё это дело завести так и не удалось, мням.
+0. Очевидно, установить [ROS2 Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html) (я использую [воркспейс ros2_ws](https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html#new-directory) из туториала), [RViz](https://docs.ros.org/en/humble/Tutorials/Intermediate/RViz/RViz-User-Guide/RViz-User-Guide.html#install-or-build-rviz) и [Gazebo (у меня Fortress)](https://gazebosim.org/docs/harmonic/install_ubuntu/#binary-installation-on-ubuntu). Что интересно и печально, в WSL2 мне нормально всё это дело завести так и не удалось, в лучшем(!) случае оно работает FPS в 5… мням.
 
 1. Клонируем (именно через git, а не просто скачать .zip с гитхаба, чтобы потом не было попаболи с разницой версий) эту ветку этого репозитория, кладём её куда-нибудь куда удобно.
 
@@ -60,5 +71,6 @@ chmod +x ./pognali.sh
 ./pognali.sh
 ```
 Но можно и просто открыть три вкладки в терминале и вручную туда копипастить.
+
 
 *Ну, в общем-то всё :)*
